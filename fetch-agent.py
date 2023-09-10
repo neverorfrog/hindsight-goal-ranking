@@ -1,11 +1,9 @@
 from collections import deque
 from copy import deepcopy
-import pandas as pd
 import seaborn as sns
 from utils import *
 import os
-from matplotlib import axes, pyplot as plt
-import matplotlib.patches as mpatches
+from matplotlib import pyplot as plt
 import numpy as np
 import gymnasium as gym
 from networks import *
@@ -14,7 +12,6 @@ import torch
 import torch.nn as nn
 from buffer import *
 from tqdm import tqdm
-from noher_agent import DDPG
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 torch.autograd.set_detect_anomaly(True)
 np.seterr(all="raise")
@@ -271,9 +268,8 @@ def test(env_name = 'FetchReach-v2', prioritized = True, record = False):
 
 from enum import Enum
 class Type(Enum):
-    NOHER = 1
-    HER = 2
-    HGR = 3
+    HER = 1
+    HGR = 2
           
 def meanplot(env_name = 'FetchReach-v2', type = Type.HGR):
     success_rates = []
@@ -284,8 +280,6 @@ def meanplot(env_name = 'FetchReach-v2', type = Type.HGR):
             agent = FetchAgent(f"HGR_{env_name}_{seed}", env)
         elif type == Type.HER:
             agent = FetchAgent(f"HER_{env_name}_{seed}", env)
-        else:
-            agent = DDPG(f"DDPG_{env_name}_{seed}", env)
         path = os.path.join("models",agent.name)
         success_rate = torch.load(open(os.path.join(path,"success.pt"),"rb"))
         if len(success_rate) > maxlen: maxlen = len(success_rate)
@@ -310,12 +304,9 @@ def plot_tasks(task):
     xaxis = (np.arange(len(toplot))+1) * 100
     plt.plot(xaxis, toplot, color='orange')
     
-    toplot = meanplot(task, Type.NOHER)
-    plt.plot(xaxis, toplot[:len(xaxis)], color='blue')
-    
     plt.xlabel("timesteps")
     plt.ylabel("mean success rate")
-    plt.legend(["HER", "HGR","NOHER"])
+    plt.legend(["HER", "HGR"])
     plt.show(block = True)
     
 
@@ -323,13 +314,7 @@ if __name__ == "__main__":
     reach = 'FetchReach-v2'
     push = 'FetchPush-v2'
     pickandplace = 'FetchPickAndPlace-v2'
-    # test(pickandplace, False)
-    # launch(reach, True)
-    # launch(slide,True)
-    # launch(pickandplace, False)
-    # launch(reach, False)
-    # launch(slide, False)
-    
+    launch(reach, Type.HER)
     plot_tasks(reach)
     
     
