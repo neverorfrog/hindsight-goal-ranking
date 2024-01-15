@@ -8,15 +8,15 @@ PyTorch implementation of [Hindsight Goal Ranking on Replay Buffer for Sparse Re
 
 ## Results
 
-## Reach
+#### Reach
 
 ![picture 0](images/reach.gif) 
 
-## Pick-and-place
+#### Pick-and-place
 
 ![picture 1](images/pickplace.gif)  
 
-## Push
+#### Push
 
 ![picture 2](images/push.gif)  
 
